@@ -1,7 +1,39 @@
 import 'package:flutter/cupertino.dart';
 import 'package:wallpaper/WallItem.dart';
 
-//
+class Wall {
+  final int id;
+  final String caption;
+  Image image;
+
+  Wall({this.id, this.caption, this.image});
+
+  factory Wall.fromJson(Map<String, dynamic> json) {
+    //var images = json['image'] as List;
+    //List<Image> listImages = images.map((json) => Image.fromJson(json)).toList();
+    return Wall(
+        id: json['id'] as int,
+        caption: json['caption'].cast<String>(),
+        image: Image.fromJson(json['url']));
+  }
+}
+
+class Image {
+  String url;
+
+  Image({this.url});
+
+  Image.fromJson(Map<String, dynamic> json) {
+    url = json['url'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['url'] = this.url;
+    return data;
+  }
+}
+
 //class Image {
 //  final String url;
 //
@@ -9,16 +41,29 @@ import 'package:wallpaper/WallItem.dart';
 //
 //  factory Image.fromJson(Map<String, dynamic> json) {
 //    return Image(
-//      url: json['url'] as String,
+//      url: json['fullPath'],
 //    );
 //  }
-//
-//  Map<String, dynamic> toJson() {
-//    final Map<String, dynamic> data = new Map<String, dynamic>();
-//    data['url'] = this.url;
-//    return data;
-//  }
 //}
+
+class Photo {
+  final int id;
+  final String url;
+  final String title;
+  final String thumbnailUrl;
+
+  Photo({this.id, this.title, this.url, this.thumbnailUrl});
+
+  factory Photo.fromJson(Map<String, dynamic> json) {
+    return Photo(
+      id: json['id'] as int,
+      title: json['title'] as String,
+      url: json['url'] as String,
+      thumbnailUrl: json['thumbnailUrl'] as String,
+    );
+  }
+}
+
 //
 //class Wall {
 //  final int id;
@@ -42,35 +87,36 @@ import 'package:wallpaper/WallItem.dart';
 //    "image": image == null ? null : image.toJson(),
 //  };
 
-class Wall {
-  int id;
-  String caption;
-  List<WallItem> image;
-
-  Wall({this.id, this.caption, this.image});
-
-  factory Wall.fromJson(Map<String, dynamic> json) {
-    var id  = json['id'];
-    var caption = json['caption'];
-    var images = json['image'] as List;
-    List<WallItem> listImages = images.map((json) => WallItem.fromJson(json)).toList();
-
-    final data = Wall(
-      id : id,
-      caption: caption,
-      image : listImages
-    );
-    return data;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['caption'] = this.caption;
-    return data;
-  }
-
+//class Wall {
+//  int id;
+//  String caption;
+//
+//  //List<WallItem> image;
+//
+//  Wall({this.id, this.caption});
+//
 //  factory Wall.fromJson(Map<String, dynamic> json) {
-//    return Wall(id: json['id'], caption: json['caption'] as String);
+//    return Wall(
+//        id: json['id'] as int,
+//        caption: json['caption'] as String
+//    );
+////    var id = json['id'];
+////    var caption = json['caption'];
+////    var images = json['image'] as List;
+////    List<WallItem> listImages = images.map((json) => WallItem.fromJson(json)).toList();
+////
+////    final data = Wall(id: id, caption: caption, image: listImages);
+////    return data;
 //  }
-}
+//
+////  Map<String, dynamic> toJson() {
+////    final Map<String, dynamic> data = new Map<String, dynamic>();
+////    data['id'] = this.id;
+////    data['caption'] = this.caption;
+////    return data;
+////  }
+//
+////  factory Wall.fromJson(Map<String, dynamic> json) {
+////    return Wall(id: json['id'], caption: json['caption'] as String);
+////  }
+//}
