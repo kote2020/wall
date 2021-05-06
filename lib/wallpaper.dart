@@ -14,8 +14,9 @@ import 'package:flutter/src/widgets/heroes.dart';
 import 'package:wallpaper/station.dart';
 import 'package:wallpaper/wall.dart';
 
-final List<Station> stations = [];
+//final List<Station> stations = [];
 final List<Wall> images = [];
+
 
 //Future<List<Station>> fetchStations(http.Client client) async {
 //  print('fetch');
@@ -34,6 +35,7 @@ final List<Wall> images = [];
 
 //A function that converts a response body into a List<Photo>.
 List<Wall> parseImages(String responseBody) {
+  print('parse');
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
 
   return parsed.map<Wall>((json) => Wall.fromJson(json)).toList();
