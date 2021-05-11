@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 
 //import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:wallpaper/categories.dart';
 
 //import 'package:http/http.dart' as http;
 //import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -19,6 +20,8 @@ import 'package:flutter/material.dart';
 //import 'package:transparent_image/transparent_image.dart';
 //import 'package:path/path.dart';
 import 'package:wallpaper/wallpaper.dart';
+
+import 'home.dart';
 
 //import { createClient } from 'pexels';
 //
@@ -31,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Wallpapers(),
+      home: Home(),
     );
   }
 }

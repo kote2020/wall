@@ -11,12 +11,12 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:path/path.dart';
 import 'package:wallpaper/full_screen.dart';
 import 'package:flutter/src/widgets/heroes.dart';
+import 'package:wallpaper/imageItem.dart';
 import 'package:wallpaper/station.dart';
 import 'package:wallpaper/wall.dart';
 
 //final List<Station> stations = [];
 final List<Wall> images = [];
-
 
 //Future<List<Station>> fetchStations(http.Client client) async {
 //  print('fetch');
@@ -36,24 +36,31 @@ final List<Wall> images = [];
 //A function that converts a response body into a List<Photo>.
 List<Wall> parseImages(String responseBody) {
   print('parse');
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  final parsed = jsonDecode(responseBody);
+  print('parsed ---- ' + parsed['list']);
 
-  return parsed.map<Wall>((json) => Wall.fromJson(json)).toList();
+  return parsed['list'].map<Wall>((json) => Wall.fromJson(json)).toList();
 }
 
 Future<List<Wall>> fetchImages(http.Client client) async {
+  print('fetch');
+  //final response = await client.get(Uri.parse('https://radio.bobrilka.ru/api/radio-stations'));
   final response = await client.get(Uri.parse('https://wallpaper4k.ru/api/v1/wallpapers'));
+  //final jsonDe = json.decode(response.body);
+  //Log.d("tag", jsonObject.toString(4));
+  final data = json.decode(response.body);
+  print(data['list'][0]['image']['url']);
 
-  return parseImages(response.body);
+  return compute(parseImages, response.body);
 }
 
-Future _getData() async {
-  var data = await http.get(Uri.parse("https://wallpaper4k.ru/api/v1/wallpapers"));
-  var jsonData = json.decode(data.body);
-  print(jsonData['list']);
-
-  return jsonData['list'][0];
-}
+//Future _getData() async {
+//  var data = await http.get(Uri.parse("https://wallpaper4k.ru/api/v1/wallpapers"));
+//  var jsonData = json.decode(data.body);
+//  print(jsonData['list']);
+//
+//  return jsonData['list'][0];
+//}
 
 // A function that converts a response body into a List<Photo>.
 //List<Photo> parsePhotos(String responseBody) {
@@ -98,34 +105,7 @@ class Wallpapers extends StatelessWidget {
           future: fetchImages(http.Client()),
           builder: (context, snapshot) {
             if (snapshot.hasError) print(snapshot.error);
-
-            return snapshot.hasData
-                ? GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    ),
-                    padding: EdgeInsets.all(5),
-                    itemCount: images.length,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          //_save("${stations[index].icon}");
-                          //_save("${stations[index].icon}");
-                          //print('save -> ' + " ${images[index].id}");
-                        },
-                        child: Container(
-                          width: 200,
-                          margin: EdgeInsets.all(6),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(7),
-                            child: Center(child: Text('${walls[index].image.url}')),
-                          ),
-                        ),
-                      );
-                    })
-                : Center(
-                    child: CircularProgressIndicator(),
-                  );
+            print(snapshot.data);
             return snapshot.hasData
                 ? ImageList(images: snapshot.data)
                 : Center(child: CircularProgressIndicator());
@@ -275,34 +255,50 @@ class ImageList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-        ),
-        padding: EdgeInsets.all(5),
-        itemCount: images.length,
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () {
-              //_save("${stations[index].icon}");
-              //_save("${stations[index].icon}");
-              //print('save -> ' + " ${images[index].id}");
-            },
-            child: Container(
-              width: 200,
-              margin: EdgeInsets.all(6),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(7),
-                child: Text('${images[index].id}'),
-//                child: FadeInImage.memoryNetwork(
-//                  placeholder: kTransparentImage,
-//                  image: "${images[index].thumbnailUrl}",
-//                  //fadeInDuration: Duration.millisecondsPerDay,
-//                ),
-              ),
-            ),
-          );
-        });
+    return new StaggeredGridView.countBuilder(
+      //controller: _scrollController,
+      //reverse: true,
+      //shrinkWrap: true,
+      padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+      physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      itemCount: images.length + 1,
+      crossAxisCount: 4,
+      itemBuilder: (context, index) {
+        final item = images[index];
+        return Text(item.id.toString());
+      },
+      staggeredTileBuilder: (int index) => new StaggeredTile.count(2, index.isEven ? 2 : 3),
+      mainAxisSpacing: 10.0,
+      crossAxisSpacing: 10.0,
+    );
+//    return GridView.builder(
+//        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//          crossAxisCount: 2,
+//        ),
+//        padding: EdgeInsets`.all(5),
+//        itemCount: images.length,
+//        itemBuilder: (context, index) {
+//          return InkWell(
+//            onTap: () {
+//              //_save("${stations[index].icon}");
+//              //_save("${stations[index].icon}");
+//              //print('save -> ' + " ${images[index].id}");
+//            },
+//            child: Container(
+//              width: 200,
+//              margin: EdgeInsets.all(6),
+//              child: ClipRRect(
+//                borderRadius: BorderRadius.circular(7),
+//                child: Text('${images[index].id}'),
+////                child: FadeInImage.memoryNetwork(
+////                  placeholder: kTransparentImage,
+////                  image: "${images[index].thumbnailUrl}",
+////                  //fadeInDuration: Duration.millisecondsPerDay,
+////                ),
+//              ),
+//            ),
+//          );
+//        });
   }
 }
 

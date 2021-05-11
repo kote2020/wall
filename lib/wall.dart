@@ -9,12 +9,12 @@ class Wall {
   Wall({this.id, this.caption, this.image});
 
   factory Wall.fromJson(Map<String, dynamic> json) {
-    //var images = json['image'] as List;
-    //List<Image> listImages = images.map((json) => Image.fromJson(json)).toList();
     return Wall(
-        id: json['id'] as int,
-        caption: json['caption'].cast<String>(),
-        image: Image.fromJson(json['url']));
+      id: json["id"],
+      caption: json["caption"],
+      image: Image.fromJson(json['image']),
+      //name: List<Name>.from(json["name"].map((x) => Name.fromJson(x))),
+    );
   }
 }
 
@@ -23,15 +23,13 @@ class Image {
 
   Image({this.url});
 
-  Image.fromJson(Map<String, dynamic> json) {
-    url = json['url'];
-  }
+  factory Image.fromJson(Map<String, dynamic> json) => Image(url: json['url']);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['url'] = this.url;
-    return data;
-  }
+//  Map<String, dynamic> toJson() {
+//    final Map<String, dynamic> data = new Map<String, dynamic>();
+//    data['url'] = this.url;
+//    return data;
+//  }
 }
 
 //class Image {
