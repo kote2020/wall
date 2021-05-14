@@ -16,22 +16,30 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<Category> categories;
   List<Wallpaper> walls;
+//
+//  ScrollController _scrollController = new ScrollController();
+//
+//  int page = 1;
 
-  //ScrollController _scrollController = new ScrollController();
+  @override
+  void initState() {
+    fetchWallpaper();
+    fetchCategories(http.Client());
 
-  int page = 1;
+    super.initState();
+  }
 
 //  _loadMore() {
 //    setState(() {
 //      page = page + 1;
 //    });
 //    int size = 30;
-//    //String url = 'https://wallpaper4k.ru/api/v1/wallpapers';
-//    //fetchApi('https://api.pexels.com/v1/curated?per_page=80&page=' + page.toString());
 //    String url = 'https://wallpaper4k.ru/api/v1/wallpapers?size=' +
 //        size.toString() +
 //        '&page=' +
 //        page.toString();
+//    //fetchApi('https://api.pexels.com/v1/curated?per_page=80&page=' + page.toString());
+//    //String url = 'https://api.pexels.com/v1/curated?per_page=80&page=' + page.toString();
 //    http.get(Uri.parse(url)).then((response) {
 //      Map result = jsonDecode(response.body);
 //      setState(() {
@@ -39,35 +47,6 @@ class _HomeState extends State<Home> {
 //      });
 //    });
 //  }
-
-//  Future<List<Category>> fetchCategories(http.Client client) async {
-//    print('fetch category');
-//    final response = await client.get(Uri.parse('https://wallpaper4k.ru/api/v1/categories'));
-//
-//    //print(response.body.toString());
-//    // Use the compute function to run parsePhotos in a separate isolate.
-//    return parseCategories(response.body);
-//  }
-//
-//  List<Category> parseCategories(String responseBody) {
-//    print('parse category');
-//    final parsed = jsonDecode(responseBody).cast<String, dynamic>();
-//    print(parsed['list']);
-//    return parsed['list'].map<Category>((json) => Category.fromJson(json)).toList();
-//  }
-
-  @override
-  void initState() {
-    fetchWallpaper(http.Client());
-    fetchCategories(http.Client());
-//    _scrollController.addListener(() {
-//      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-//        print(_scrollController.position.pixels);
-//        _loadMore();
-//      }
-//    });
-    super.initState();
-  }
 
 //  @override
 //  void dispose() {
@@ -110,7 +89,7 @@ class _HomeState extends State<Home> {
                 },
               ),
               FutureBuilder<List<Wallpaper>>(
-                future: fetchWallpaper(http.Client()),
+                future: fetchWallpaper(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) print(snapshot.error);
                   return snapshot.hasData

@@ -97,8 +97,6 @@ class _CategoriesState extends State<Categories> {
   }
 }
 
-//color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
-
 class CategoryList extends StatelessWidget {
   final List<Category> categories;
   List colors = [
