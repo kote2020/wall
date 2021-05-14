@@ -17,6 +17,29 @@ class _HomeState extends State<Home> {
   List<Category> categories;
   List<Wallpaper> walls;
 
+  //ScrollController _scrollController = new ScrollController();
+
+  int page = 1;
+
+//  _loadMore() {
+//    setState(() {
+//      page = page + 1;
+//    });
+//    int size = 30;
+//    //String url = 'https://wallpaper4k.ru/api/v1/wallpapers';
+//    //fetchApi('https://api.pexels.com/v1/curated?per_page=80&page=' + page.toString());
+//    String url = 'https://wallpaper4k.ru/api/v1/wallpapers?size=' +
+//        size.toString() +
+//        '&page=' +
+//        page.toString();
+//    http.get(Uri.parse(url)).then((response) {
+//      Map result = jsonDecode(response.body);
+//      setState(() {
+//        walls.addAll(result['list']);
+//      });
+//    });
+//  }
+
 //  Future<List<Category>> fetchCategories(http.Client client) async {
 //    print('fetch category');
 //    final response = await client.get(Uri.parse('https://wallpaper4k.ru/api/v1/categories'));
@@ -37,8 +60,20 @@ class _HomeState extends State<Home> {
   void initState() {
     fetchWallpaper(http.Client());
     fetchCategories(http.Client());
+//    _scrollController.addListener(() {
+//      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+//        print(_scrollController.position.pixels);
+//        _loadMore();
+//      }
+//    });
     super.initState();
   }
+
+//  @override
+//  void dispose() {
+//    _scrollController.dispose();
+//    super.dispose();
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +115,7 @@ class _HomeState extends State<Home> {
                   if (snapshot.hasError) print(snapshot.error);
                   return snapshot.hasData
                       ? WallpaperList(walls: snapshot.data)
-                      : Center(child: Text('load'));
+                      : Center(child: CircularProgressIndicator());
                 },
               ),
             ],
