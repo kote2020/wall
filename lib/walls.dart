@@ -55,17 +55,14 @@ class WallpaperList extends StatelessWidget {
                   new MaterialPageRoute(builder: (context) => new FullScreen(imageUrl: imgPath))),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: new Hero(
-                  tag: 'tagImage',
-                  child: new FadeInImage(
+                child: new FadeInImage(
 //placeholder: 'assets/images/loading.gif',
-                    placeholder: new AssetImage('assets/images/load_sm.gif'),
-                    image: NetworkImage(
-                      imgPath,
-                    ),
-                    fit: BoxFit.cover,
-//fadeInDuration: Duration.millisecondsPerDay,
+                  placeholder: new AssetImage('assets/images/load_sm.gif'),
+                  image: NetworkImage(
+                    imgPath,
                   ),
+                  fit: BoxFit.cover,
+//fadeInDuration: Duration.millisecondsPerDay,
                 ),
               ),
             ));

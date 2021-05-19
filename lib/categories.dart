@@ -146,8 +146,7 @@ class CategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 70,
+    return Expanded(
       child: ListView.builder(
         padding: EdgeInsets.symmetric(horizontal: 15),
 //      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
