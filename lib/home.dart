@@ -16,7 +16,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<Category> categories;
   List<Wallpaper> walls;
-
 //
 //  ScrollController _scrollController = new ScrollController();
 //
@@ -74,30 +73,32 @@ class _HomeState extends State<Home> {
         bottomOpacity: 0.0,
         elevation: 0.0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          // crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            FutureBuilder<List<Category>>(
-              future: fetchCategories(http.Client()),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) print(snapshot.error);
-                return snapshot.hasData
-                    ? CategoryList(categories: snapshot.data)
-                    : Center(child: CircularProgressIndicator());
-              },
-            ),
-            FutureBuilder<List<Wallpaper>>(
-              future: fetchWallpaper(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) print(snapshot.error);
-                return snapshot.hasData
-                    ? WallpaperList(walls: snapshot.data)
-                    : Center(child: CircularProgressIndicator());
-              },
-            ),
-          ],
+      body: Container(
+        child: SingleChildScrollView(
+          child: Column(
+//            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              FutureBuilder<List<Category>>(
+                future: fetchCategories(http.Client()),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) print(snapshot.error);
+                  return snapshot.hasData
+                      ? CategoryList(categories: snapshot.data)
+                      : Center(child: CircularProgressIndicator());
+                },
+              ),
+              FutureBuilder<List<Wallpaper>>(
+                future: fetchWallpaper(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) print(snapshot.error);
+                  return snapshot.hasData
+                      ? WallpaperList(walls: snapshot.data)
+                      : Center(child: CircularProgressIndicator());
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

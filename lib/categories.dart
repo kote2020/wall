@@ -146,7 +146,8 @@ class CategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return Container(
+      height: 70,
       child: ListView.builder(
         padding: EdgeInsets.symmetric(horizontal: 15),
 //      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -196,7 +197,6 @@ class CategoryList extends StatelessWidget {
 //                  WallpaperList(walls: wallpapers)
                 ],
               ));
-          //return Text(categories[index].name.ru);
         },
       ),
     );

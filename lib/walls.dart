@@ -33,43 +33,65 @@ class WallpaperList extends StatelessWidget {
 
   WallpaperList({Key key, this.walls}) : super(key: key);
 
+  ScrollController _scrollController = ScrollController();
+  int currentMax = 10;
+
   @override
   Widget build(BuildContext context) {
-    return new StaggeredGridView.countBuilder(
-      shrinkWrap: true,
-      padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
-      physics: BouncingScrollPhysics(),
-      itemCount: walls.length,
-      crossAxisCount: 4,
-      itemBuilder: (context, index) {
+    return Column(
+      children: [
+        Container(
+          height: 70,
+          child: ListView.builder(
+            controller: _scrollController,
+            physics: BouncingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            itemCount: walls.length,
+            itemBuilder: (context, i) {
+              return SizedBox(width: 100, height: 50, child: Text(walls[i].category.ru));
+            },
+          ),
+        ),
+        new StaggeredGridView.countBuilder(
+          shrinkWrap: true,
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
+          physics: BouncingScrollPhysics(),
+          itemCount: walls.length,
+          crossAxisCount: 4,
+          itemBuilder: (context, index) {
 //        if (index == walls.length) {
 //          return CupertinoActivityIndicator();
 //        }
-        String imgPath = walls[index].image.url;
-        return new Material(
-            elevation: 3.0,
-            borderRadius: new BorderRadius.circular(8.0),
-            shadowColor: Colors.grey.shade50,
-            child: new InkWell(
-              onTap: () => Navigator.push(context,
-                  new MaterialPageRoute(builder: (context) => new FullScreen(imageUrl: imgPath))),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: new FadeInImage(
+            String imgPath = walls[index].image.url;
+            return new Material(
+                elevation: 3.0,
+                borderRadius: new BorderRadius.circular(8.0),
+                shadowColor: Colors.grey.shade50,
+                child: new InkWell(
+                  onTap: () => Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (context) => new FullScreen(imageUrl: imgPath))),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: new FadeInImage(
 //placeholder: 'assets/images/loading.gif',
-                  placeholder: new AssetImage('assets/images/load_sm.gif'),
-                  image: NetworkImage(
-                    imgPath,
-                  ),
-                  fit: BoxFit.cover,
+                      placeholder: new AssetImage('assets/images/load_sm.gif'),
+                      image: NetworkImage(
+                        imgPath,
+                      ),
+                      fit: BoxFit.cover,
 //fadeInDuration: Duration.millisecondsPerDay,
-                ),
-              ),
-            ));
-      },
-      staggeredTileBuilder: (int index) => new StaggeredTile.count(2, index.isEven ? 2 : 3),
-      mainAxisSpacing: 10.0,
-      crossAxisSpacing: 10.0,
+                    ),
+                  ),
+                ));
+          },
+          staggeredTileBuilder: (int index) => new StaggeredTile.count(2, index.isEven ? 2 : 3),
+          mainAxisSpacing: 10.0,
+          crossAxisSpacing: 10.0,
+        ),
+      ],
     );
   }
 }
