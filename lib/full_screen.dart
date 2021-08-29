@@ -26,6 +26,7 @@ class FullScreen extends StatefulWidget {
 
 class _FullScreenState extends State<FullScreen> {
   FToast fToast;
+  bool isLoad = false;
 
   @override
   void initState() {
@@ -101,7 +102,7 @@ class _FullScreenState extends State<FullScreen> {
   Future<void> setWall() async {
     int location = WallpaperManager.HOME_SCREEN;
     var file = await DefaultCacheManager().getSingleFile(widget.imageUrl);
-    String result = await WallpaperManager.setWallpaperFromFile(file.path, location);
+    return await WallpaperManager.setWallpaperFromFile(file.path, location);
   }
 
   @override
@@ -146,16 +147,17 @@ class _FullScreenState extends State<FullScreen> {
                       //iconSize: 30,
                       onPressed: () {
                         setWall();
-                        Fluttertoast.showToast(
-                            msg: "Обои установлены",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.black26,
-                            textColor: Colors.white,
-                            fontSize: 16.0
-                        );
-                       //Fluttertoast.showToast(msg: "Обои установлены");
+
+                        Future.delayed(const Duration(seconds: 1), () {
+                          Fluttertoast.showToast(
+                              msg: "Обои установлены",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.black26,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        });
                       },
                     ),
                   ),
@@ -179,11 +181,10 @@ class _FullScreenState extends State<FullScreen> {
                             msg: "Обои сохранены",
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
+                            timeInSecForIosWeb: 2,
                             backgroundColor: Colors.white54,
                             textColor: Colors.black,
-                            fontSize: 16.0
-                        );
+                            fontSize: 16.0);
                       },
                     ),
                   ),

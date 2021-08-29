@@ -4,16 +4,14 @@ class Wallpaper {
   final int id;
   final int downloads;
   Image image;
-  CategoryById category;
 
-  Wallpaper({this.id, this.downloads, this.image, this.category});
+  Wallpaper({this.id, this.downloads, this.image});
 
   factory Wallpaper.fromJson(Map<String, dynamic> json) {
     return Wallpaper(
         id: json["id"],
         downloads: json["downloads"],
         image: Image.fromJson(json['image']),
-        category: CategoryById.fromJson(json['category'])
         //name: List<Name>.from(json["name"].map((x) => Name.fromJson(x))),
         );
   }

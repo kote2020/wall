@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:wallpaper/categories.dart';
@@ -16,57 +18,95 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<Category> categories;
   List<Wallpaper> walls;
-//
-//  ScrollController _scrollController = new ScrollController();
-//
-//  int page = 1;
+
+  List images = [];
+  ScrollController _scrollController = ScrollController();
+  bool isLoading = false;
+
+  String url = 'https://wallpaper4k.ru/api/v1/wallpapers?size=20&page=';
+
+  int currentPage = 1;
 
   @override
   void initState() {
-    fetchWallpaper();
-    fetchCategories(http.Client());
-
     super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+        print('get more');
+        //loadMore();
+      }
+    });
   }
 
-//  _loadMore() {
-//    setState(() {
-//      page = page + 1;
+  fetchApi(page) async {
+    await http.get(Uri.parse(url + page)).then((value) {
+      //print(value.body);
+      Map result = jsonDecode(value.body);
+      setState(() {
+        images = result['list'];
+      });
+      //print(images);
+    });
+  }
+
+  loadMore() async {
+    int size = 20;
+    int page = currentPage + 1;
+    var uri = 'https://wallpaper4k.ru/api/v1/wallpapers' +
+        '?size=' +
+        size.toString() +
+        '&page=' +
+        page.toString();
+
+    await http.get(Uri.parse(uri)).then((value) {
+      print(value.body);
+      Map result = jsonDecode(value.body);
+      setState(() {
+        walls.addAll(result['list']);
+      });
+    });
+
+    //print(walls);
+
+//    await http.get(Uri.parse(uri)).then((value) {
+//      //print(value.body);
+//      Map result = jsonDecode(value.body);
+//      walls.addAll(result['list']);
 //    });
-//    int size = 30;
-//    String url = 'https://wallpaper4k.ru/api/v1/wallpapers?size=' +
-//        size.toString() +
-//        '&page=' +
-//        page.toString();
-//    //fetchApi('https://api.pexels.com/v1/curated?per_page=80&page=' + page.toString());
-//    //String url = 'https://api.pexels.com/v1/curated?per_page=80&page=' + page.toString();
+
+    //fetchApi('https://api.pexels.com/v1/curated?per_page=80&page=' + page.toString());
+    //String url = 'https://api.pexels.com/v1/curated?per_page=80&page=' + page.toString();
+    //fetchWallpaper(url);
+
 //    http.get(Uri.parse(url)).then((response) {
 //      Map result = jsonDecode(response.body);
-//      setState(() {
-//        walls.addAll(result['list']);
-//      });
+//       walls.addAll(result['list']);
 //    });
-//  }
+  }
 
-//  @override
-//  void dispose() {
-//    _scrollController.dispose();
-//    super.dispose();
-//  }
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Wallpaper2You',
-          //'Radio',
-          style: TextStyle(
-            fontFamily: "Montserrat",
-            fontWeight: FontWeight.w300,
-            color: Colors.blueGrey[800],
-            //backgroundColor: Colors.red
-          ),
+        title: Column(
+          children: [
+            Text(
+              'Wallpaper2You',
+              //'Radio',
+              style: TextStyle(
+                fontFamily: "Montserrat",
+                fontWeight: FontWeight.w300,
+                color: Colors.blueGrey[800],
+                //backgroundColor: Colors.red
+              ),
+            ),
+          ],
         ),
         //centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -75,6 +115,8 @@ class _HomeState extends State<Home> {
       ),
       body: Container(
         child: SingleChildScrollView(
+          controller: _scrollController,
+          physics: BouncingScrollPhysics(),
           child: Column(
 //            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             // crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -88,15 +130,23 @@ class _HomeState extends State<Home> {
                       : Center(child: CircularProgressIndicator());
                 },
               ),
-              FutureBuilder<List<Wallpaper>>(
-                future: fetchWallpaper(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) print(snapshot.error);
-                  return snapshot.hasData
-                      ? WallpaperList(walls: snapshot.data)
-                      : Center(child: CircularProgressIndicator());
-                },
-              ),
+
+//              InkWell(
+//                onTap: () {
+//                  loadMore();
+//                },
+//                child: Container(
+//                  height: 60,
+//                  width: double.infinity,
+//                  color: Colors.black,
+//                  child: Center(
+//                    child: Text(
+//                      'Load More',
+//                      style: TextStyle(color: Colors.white),
+//                    ),
+//                  ),
+//                ),
+//              )
             ],
           ),
         ),
