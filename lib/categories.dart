@@ -115,6 +115,10 @@ class _CategoryListState extends State<CategoryList>
     Colors.brown[400],
   ];
 
+  int category_id;
+
+  Wallpaper wallpaper;
+
   TabController _tabController;
 
   @override
@@ -138,32 +142,36 @@ class _CategoryListState extends State<CategoryList>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only( bottom: 15),
+          padding: const EdgeInsets.only(bottom: 15),
           child: TabBar(
               controller: _tabController,
               isScrollable: true,
               indicatorColor: colors[15],
               indicatorSize: TabBarIndicatorSize.label,
               indicator: UnderlineTabIndicator(
-                  borderSide: BorderSide(
-                      width: 2.0,
-                    color: colors[15],
-                  ),
-                  insets: EdgeInsets.symmetric(horizontal:20.0),
-
+                borderSide: BorderSide(
+                  width: 2.0,
+                  color: colors[15],
+                ),
+                insets: EdgeInsets.symmetric(horizontal: 20.0),
               ),
               tabs: widget.categories.map((Category category) {
-                return Container(
+                if(category.items == 0) {
+                  return Container(width: 0, height: 0);
+                }
+                category_id = category.id;
+                 return Container(
                     padding: EdgeInsets.only(bottom: 7),
                     //margin: EdgeInsets.only(right: 8, top: 10),
                     //padding: EdgeInsets.symmetric(horizontal: 10),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(5),
                       child: Container(
-                        width: 110,
+                        width: 100,
                         height: 30,
                         decoration: BoxDecoration(color: colors[9]),
                         alignment: Alignment.center,
@@ -178,13 +186,13 @@ class _CategoryListState extends State<CategoryList>
                                   child: Text(
                                     category.name.ru,
                                     style:
-                                        TextStyle(color: borders[9], fontWeight: FontWeight.w400),
+                                    TextStyle(color: borders[9], fontWeight: FontWeight.w400),
                                   ),
                                 ),
-                                Text(
-                                  category.items.toString(),
-                                  style: TextStyle(color: borders[9], fontWeight: FontWeight.w400),
-                                ),
+//                                Text(
+//                                  category.items.toString(),
+//                                  style: TextStyle(color: borders[9], fontWeight: FontWeight.w400),
+//                                ),
                               ],
                             )),
                       ),
@@ -192,105 +200,304 @@ class _CategoryListState extends State<CategoryList>
               }).toList()),
         ),
         SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
           child: TabBarView(
-            controller: _tabController,
-            children: <Widget>[
-              FutureBuilder<List<Wallpaper>>(
-                future: fetchWallpaper('https://wallpaper4k.ru/api/v1/wallpapers?size=20'),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) print(snapshot.error);
-                  return snapshot.hasData
-                      ? WallpaperList(walls: snapshot.data)
-                      : Center(child: CircularProgressIndicator());
-                },
-              ),
-              Center(
-                child: Text(
-                  'KALTEGETRANKE',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'HEIBGETRANKE',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'MILCHPPODUKE',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'BROTCHEN',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'KALTEGETRANKE',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'HEIBGETRANKE',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'MILCHPPODUKE',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'BROTCHEN',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'KALTEGETRANKE',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'HEIBGETRANKE',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'MILCHPPODUKE',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'BROTCHEN',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'KALTEGETRANKE',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'HEIBGETRANKE',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
+              controller: _tabController,
+              children:
+              widget.categories.map((Category category) {
+                if(category.items == 0) {
+                  return Center(
+                    child: Text('Нету изображений'),
+                  );
+                }
+                return Container(
+                  child: FutureBuilder<List<Wallpaper>>(
+                    future: fetchWallpaper('https://wallpaper4k'
+                        '.ru/api/v1/wallpapers?size=20&category_id=' +
+                        category.id.toString()),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) print(snapshot.error);
+                      return snapshot.hasData
+                          ? WallpaperList(walls: snapshot.data)
+                          : Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                );
+              }).toList(),
+//              Center(
+//                child: Text(
+//                  'KALTEGETRANKE',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//              Container(
+//                child: FutureBuilder<List<Wallpaper>>(
+//                  future: fetchWallpaper('https://wallpaper4k'
+//                          '.ru/api/v1/wallpapers?size=20&category_id' +
+//                      category_id.toString()),
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasError) print(snapshot.error);
+//                    return snapshot.hasData
+//                        ? WallpaperList(walls: snapshot.data)
+//                        : Center(child: CircularProgressIndicator());
+//                  },
+//                ),
+//              ),
+//
+//              Center(
+//                child: Text(
+//                  'HEIBGETRANKE',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
+//              Center(
+//                child: Text(
+//                  'MILCHPPODUKE',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
+//              Center(
+//                child: Text(
+//                  'BROTCHEN',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
+//              Center(
+//                child: Text(
+//                  'KALTEGETRANKE',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
+//              Center(
+//                child: Text(
+//                  'HEIBGETRANKE',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
+//              Center(
+//                child: Text(
+//                  'MILCHPPODUKE',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
+//              Center(
+//                child: Text(
+//                  'BROTCHEN',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
+//              Center(
+//                child: Text(
+//                  'KALTEGETRANKE',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
+//              Center(
+//                child: Text(
+//                  'HEIBGETRANKE',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
+//              Center(
+//                child: Text(
+//                  'MILCHPPODUKE',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
+//              Center(
+//                child: Text(
+//                  'BROTCHEN',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
+//              Center(
+//                child: Text(
+//                  'KALTEGETRANKE',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
+//              Center(
+//                child: Text(
+//                  'HEIBGETRANKE',
+//                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+//                ),
+//              ),
           ),
         ),
 //        Expanded(
@@ -391,8 +598,10 @@ Widget _grid(walls) {
             borderRadius: new BorderRadius.circular(8.0),
             shadowColor: Colors.grey.shade50,
             child: new InkWell(
-              onTap: () => Navigator.push(context,
-                  new MaterialPageRoute(builder: (context) => new FullScreen(imageUrl: imgPath))),
+              onTap: () =>
+                  Navigator.push(context,
+                      new MaterialPageRoute(
+                          builder: (context) => new FullScreen(imageUrl: imgPath))),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
                 child: new FadeInImage(
